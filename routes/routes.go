@@ -27,7 +27,7 @@ func SetupRoutes(router * gin.Engine) {
 	{
 		projectRoutes.POST("/",controllers.CreateProject)
 		projectRoutes.GET("/",controllers.GetProjects)
-		projectRoutes.GET("/:id", controllers.GetProjects)
+		projectRoutes.GET("/:id", controllers.GetProject)
 		projectRoutes.PUT("/:id", controllers.UpdateProject)
 		projectRoutes.DELETE("/:id", controllers.DeleteProject)
 	}

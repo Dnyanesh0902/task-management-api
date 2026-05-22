@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"net/http"
-	"task-management-api/database"
 	"task-management-api/dto"
 	"task-management-api/models"
+	"task-management-api/services"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,17 +29,12 @@ func CreateTask(c *gin.Context) {
 		AssignedToID: input.AssignedToID,
 	}
 
-	if err := database.DB.Create(&task).Error; err != nil {
+	if err := services.CreateTask(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"failed to create task",
 		})
 		return
 	}
-	database.DB.
-		Preload("Project").
-		Preload("AssignedUser").
-		First(&task, task.ID)
-		
 	c.JSON(http.StatusCreated, gin.H{
 		"message":"Task created successfully",
 		"data" : task,
@@ -47,26 +43,24 @@ func CreateTask(c *gin.Context) {
 
 
 func GetTasks(c *gin.Context) {
-	var task []models.Task
+	tasks, err := services.GetTasks()
 
-	if err := database.DB.Preload("Project").Preload("AssignedUser").Find(&task).Error; err != nil {
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":"failed to get tasks",
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
-		
-		"data":task,
+		"data":tasks,
 	})
 }
 
 func GetTask(c *gin.Context) {
 	id := c.Param("id")
-	var task models.Task
+	task, err := services.GetTask(id)
 
-	if err := database.DB.Preload("Project").Preload("AssignedUser").First(&task, id).Error; err != nil {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"task not found",
 		})
@@ -79,8 +73,8 @@ func GetTask(c *gin.Context) {
 
 func UpdateTask(c *gin.Context) {
 	id := c.Param("id")
-	var task models.Task
-	if err := database.DB.First(&task, id).Error; err != nil{
+	task, err := services.GetTask(id)
+	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"task not found",
 		})
@@ -101,12 +95,13 @@ func UpdateTask(c *gin.Context) {
 	task.ProjectID = input.ProjectID
 	task.AssignedToID = input.AssignedToID
 
-	if err := database.DB.Save(&task).Error; err != nil {
+	if err := services.UpdateTask(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"Message":"failed to update task",
 		})
 		return
 	}
+	task, _ = services.GetTask(id)
 	c.JSON(http.StatusOK, gin.H{
 		"message":"task updated successfully",
 		"data":task,
@@ -115,14 +110,14 @@ func UpdateTask(c *gin.Context) {
 
 func DeleteTask(c *gin.Context){
 	id := c.Param("id")
-	var task models.Task
-	if err := database.DB.First(&task, id).Error; err != nil {
+	task,err := services.GetTask(id)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"task not found",
 		})
 		return
 	}
-	if err := database.DB.Delete(&task).Error; err != nil {
+	if err := services.DeleteTask(&task); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})

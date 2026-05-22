@@ -1,13 +1,13 @@
-package controllers 
+package controllers
 
 import (
 	"net/http"
+	"strconv"
+	"task-management-api/dto"
+	"task-management-api/models"
+	"task-management-api/services"
 
 	"github.com/gin-gonic/gin"
-	"task-management-api/dto"
-	"task-management-api/database"
-	"task-management-api/models"
-	
 )
 
 func CreateUser(c *gin.Context) {
@@ -27,7 +27,7 @@ func CreateUser(c *gin.Context) {
 		Role: input.Role,
 	}
 
-	if err :=database.DB.Create(&user).Error; err != nil {
+	if err := services.CreateUser(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"failed to create user",
 		})
@@ -41,9 +41,9 @@ func CreateUser(c *gin.Context) {
 
 
 func GetUsers(c *gin.Context){
-	var users []models.User
+	user, err := services.GetUsers()
 
-	if err := database.DB.Find(&users).Error; err != nil {
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H {
 			"message": "failed to fetch user",
 		})
@@ -51,15 +51,15 @@ func GetUsers(c *gin.Context){
 	}
 
 	c.JSON(http.StatusOK, gin.H {
-		"data": users,
+		"data": user,
 	})
 }
 
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
-	var user models.User
+	user, err := services.GetUser(id)
 
-	if err := database.DB.First(&user, id).Error; err != nil {
+	if  err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"User Not Found",
 		})
@@ -72,8 +72,8 @@ func GetUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	id := c.Param("id")
-	var user models.User
-	if err := database.DB.First(&user, id).Error; err != nil {
+	user, err := services.GetUser(id)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"user not found",
 		})
@@ -94,7 +94,7 @@ func UpdateUser(c *gin.Context) {
 	user.Password = input.Password
 	user.Role = input.Role
 
-	if err := database.DB.Save(&user).Error; err != nil {
+	if err := services.UpdateUser(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":"failed to update user",
 		})
@@ -109,16 +109,21 @@ func UpdateUser(c *gin.Context) {
 
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
-	var user models.User
-
-	if err := database.DB.First(&user, id).Error; err != nil{
+	_, err := strconv.Atoi(id)
+	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
-			"Message": err.Error(),
+			"Message": "Invalid User ID",
 		})
 		return
 	}
-
-	if err := database.DB.Delete(&user).Error; err != nil {
+	user, err := services.GetUser(id)
+	if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message":"student not found",
+		})
+		return
+	}
+	if err := services.DeleteUser(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"Message":"failed to delete user",
 		})

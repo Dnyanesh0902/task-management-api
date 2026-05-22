@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"net/http"
-	"github.com/gin-gonic/gin"
-	"task-management-api/models"
-	"task-management-api/database"
 	"task-management-api/dto"
+	"task-management-api/models"
+	"task-management-api/services"
+	"github.com/gin-gonic/gin"
 )
 
 func CreateProject(c *gin.Context){
@@ -22,8 +22,8 @@ func CreateProject(c *gin.Context){
 		Name:  input.Name,
 		Description: input.Description,
 	}
-	if err := database.DB.Create(&project).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+	if err := services.CreateProject(&project); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"failed to create",
 		})
 		return
@@ -35,9 +35,8 @@ func CreateProject(c *gin.Context){
 }
 
 func GetProjects(c *gin.Context) {
-	var project []models.Project
-
-	if err := database.DB.Find(&project).Error; err != nil {
+	project, err := services.GetProjects()
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -50,9 +49,9 @@ func GetProjects(c *gin.Context) {
 
 func GetProject(c *gin.Context){
 	id := c.Param("id")
-	var project models.Project
+	project, err :=services.GetProject(id)
 
-	if err := database.DB.First(&project, id).Error; err != nil{
+	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"project not found",
 		})
@@ -65,9 +64,8 @@ func GetProject(c *gin.Context){
 
 func UpdateProject(c *gin.Context) {
 	id := c.Param("id")
-	var project models.Project
-
-	if err := database.DB.First(&project, id).Error; err != nil {
+	project, err := services.GetProject(id)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"project not found",
 		})
@@ -84,7 +82,7 @@ func UpdateProject(c *gin.Context) {
 	}
 	project.Name = input.Name
 	project.Description= input.Description
-	if err := database.DB.Save(&project).Error; err != nil {
+	if err := services.UpdateProject(&project); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"failed to update project",
 		})
@@ -98,15 +96,15 @@ func UpdateProject(c *gin.Context) {
 
 func DeleteProject(c *gin.Context){
 	id := c.Param("id")
-	var project models.Project
+	project, err := services.GetProject(id)
 
-	if err := database.DB.First(&project, id).Error; err != nil{
+	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":"project not found",
 		})
 		return
 	}
-	if err := database.DB.Delete(&project).Error; err != nil{
+	if err := services.DeleteProject(&project); err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":"failed to delete project",
 		})

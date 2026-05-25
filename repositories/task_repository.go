@@ -3,6 +3,7 @@ package repositories
 import (
 	"task-management-api/database"
 	"task-management-api/models"
+
 )
 
 func CreateTask(task *models.Task) error {
@@ -16,16 +17,35 @@ func CreateTask(task *models.Task) error {
 		First(task, task.ID).Error
 }
 
-func GetTasks() ([]models.Task, error) {
+func GetTasks(page int, limit int, status string, priority string,search string) ([]models.Task, int64, error) {
 
 	var tasks []models.Task
+	var total int64
+	query := database.DB.Model(&models.Task{})
 
-	err := database.DB.
+	if status != ""{
+		query = query.Where("status = ?", status)
+	}
+
+	if priority != ""{
+		query = query.Where("priority = ?", priority)
+	}
+
+	if search != "" {
+		query = query.Where("title LIKE ? OR description LIKE ?","%"+search+"%", "%"+search+"%")
+	}
+	query.Count(&total)
+
+	offset := (page -1) * limit
+
+	err := query.
 		Preload("Project").
 		Preload("AssignedUser").
+		Limit(limit).
+		Offset(offset).
 		Find(&tasks).Error
 
-	return tasks, err
+	return tasks,total, err
 }
 
 func GetTask(id string)(models.Task, error){
@@ -34,9 +54,6 @@ func GetTask(id string)(models.Task, error){
 	return task, err
 }
 
-// func UpdateTask(task *models.Task)error{
-// 	return database.DB.Save(task).Error
-// }
 func UpdateTask(task *models.Task) error {
 	return database.DB.Model(&models.Task{}).
 		Where("id = ?", task.ID).

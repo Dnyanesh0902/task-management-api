@@ -1,0 +1,29 @@
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Kokate@123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    restart: always
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  app:
+    build: .
+    container_name: task-management-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sqlserver
+      - redis
+    restart: always

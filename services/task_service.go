@@ -10,8 +10,8 @@ func CreateTask(task *models.Task) error{
 	return repositories.CreateTask(task)
 }
 
-func GetTasks()([]models.Task, error){
-	return repositories.GetTasks()
+func GetTasks(page int, limit int, status string, priority string, search string)([]models.Task, int64, error){
+	return repositories.GetTasks(page, limit, status, priority, search)
 }
 
 func GetTask(id string)(models.Task, error){

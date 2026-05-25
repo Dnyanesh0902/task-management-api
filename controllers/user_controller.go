@@ -6,7 +6,7 @@ import (
 	"task-management-api/dto"
 	"task-management-api/models"
 	"task-management-api/services"
-
+	"task-management-api/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,11 +19,17 @@ func CreateUser(c *gin.Context) {
 		})
 		return
 	}
-
+	hashedPassword, err := utils.HashPassword(input.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message":"failed to hash password",
+		})
+		return
+	}
 	user := models.User {
 		Name:  input.Name,
 		Email: input.Email,
-		Password: input.Password,
+		Password: hashedPassword,
 		Role: input.Role,
 	}
 

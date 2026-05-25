@@ -9,7 +9,7 @@ type User struct {
 
 	Email     string    `gorm:"unique;not null" json:"email"`
 
-	Password string `gorm:"size:100;not null" json:"-"`
+	Password string `gorm:"size:100;not null" json:"password"`
 
 	Role      string    `gorm:"default:user" json:"role"`
 

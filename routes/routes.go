@@ -31,4 +31,9 @@ func SetupRoutes(router * gin.Engine) {
 		projectRoutes.PUT("/:id", controllers.UpdateProject)
 		projectRoutes.DELETE("/:id", controllers.DeleteProject)
 	}
+	authRoutes := api.Group("/auth")
+	{
+		authRoutes.POST("/register", controllers.Register)
+		authRoutes.POST("/login", controllers.Login)
+	}
 }

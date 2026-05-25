@@ -7,7 +7,16 @@ import (
 	"task-management-api/services"
 	"github.com/gin-gonic/gin"
 )
-
+// CreateProject godoc
+// @Summary Create project
+// @Description Create a new project
+// @Tags Projects
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateProjectRequest true "Create Project Request"
+// @Success 201 {object} map[string]interface{}
+// @Router /projects [post]
 func CreateProject(c *gin.Context){
 	var input dto.CreateProjectRequest
 
@@ -33,7 +42,14 @@ func CreateProject(c *gin.Context){
 		"data": project,
 	})
 }
-
+// GetProjects godoc
+// @Summary Get all projects
+// @Description Get all projects
+// @Tags Projects
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /projects [get]
 func GetProjects(c *gin.Context) {
 	project, err := services.GetProjects()
 	if err != nil {
@@ -46,7 +62,15 @@ func GetProjects(c *gin.Context) {
 		"data": project,
 	})
 }
-
+// GetProject godoc
+// @Summary Get project by ID
+// @Description Get single project by ID
+// @Tags Projects
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "Project ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /projects/{id} [get]
 func GetProject(c *gin.Context){
 	id := c.Param("id")
 	project, err :=services.GetProject(id)
@@ -61,7 +85,17 @@ func GetProject(c *gin.Context){
 		"data":project,
 	})
 }
-
+// UpdateProject godoc
+// @Summary Update project
+// @Description Update project by ID
+// @Tags Projects
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "Project ID"
+// @Param request body dto.CreateProjectRequest true "Update Project Request"
+// @Success 200 {object} map[string]interface{}
+// @Router /projects/{id} [put]
 func UpdateProject(c *gin.Context) {
 	id := c.Param("id")
 	project, err := services.GetProject(id)
@@ -93,7 +127,15 @@ func UpdateProject(c *gin.Context) {
 		"data":project,
 	})
 }
-
+// DeleteProject godoc
+// @Summary Delete project
+// @Description Delete project by ID
+// @Tags Projects
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "Project ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /projects/{id} [delete]
 func DeleteProject(c *gin.Context){
 	id := c.Param("id")
 	project, err := services.GetProject(id)

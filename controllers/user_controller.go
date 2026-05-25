@@ -10,6 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CreateUser godoc
+// @Summary Create user
+// @Description Create a new user
+// @Tags Users
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.RegisterUserRequest true "Create User Request"
+// @Success 201 {object} map[string]interface{}
+// @Router /users [post]
 func CreateUser(c *gin.Context) {
 	var input dto.RegisterUserRequest
 
@@ -45,7 +55,14 @@ func CreateUser(c *gin.Context) {
 	})
 }
 
-
+// GetUsers godoc
+// @Summary Get all users
+// @Description Get all users
+// @Tags Users
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /users [get]
 func GetUsers(c *gin.Context){
 	user, err := services.GetUsers()
 
@@ -61,6 +78,15 @@ func GetUsers(c *gin.Context){
 	})
 }
 
+// GetUser godoc
+// @Summary Get user by ID
+// @Description Get single user by ID
+// @Tags Users
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /users/{id} [get]
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
 	user, err := services.GetUser(id)
@@ -76,6 +102,17 @@ func GetUser(c *gin.Context) {
 	})
 }
 
+// UpdateUser godoc
+// @Summary Update user
+// @Description Update user by ID
+// @Tags Users
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param request body dto.RegisterUserRequest true "Update User Request"
+// @Success 200 {object} map[string]interface{}
+// @Router /users/{id} [put]
 func UpdateUser(c *gin.Context) {
 	id := c.Param("id")
 	user, err := services.GetUser(id)
@@ -113,6 +150,15 @@ func UpdateUser(c *gin.Context) {
 	})
 }
 
+// DeleteUser godoc
+// @Summary Delete user
+// @Description Delete user by ID
+// @Tags Users
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	_, err := strconv.Atoi(id)

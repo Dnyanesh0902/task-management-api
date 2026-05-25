@@ -1,12 +1,29 @@
-# Task Management API
+# 🚀 Task Management API
 
-A professional backend REST API built using **Go (Golang)**, **Gin**, **GORM**, **SQL Server**, and **Redis** following clean backend architecture principles.
+![Go](https://img.shields.io/badge/Go-1.25-blue)
+![Gin](https://img.shields.io/badge/Gin-Web_Framework-green)
+![GORM](https://img.shields.io/badge/GORM-ORM-orange)
+![SQL Server](https://img.shields.io/badge/SQL_Server-Database-red)
+![Redis](https://img.shields.io/badge/Redis-Cache-critical)
+![Docker](https://img.shields.io/badge/Docker-Containerization-blue)
+![JWT](https://img.shields.io/badge/JWT-Authentication-yellow)
 
-This project includes JWT Authentication, Role-Based Authorization, CRUD Operations, Redis Caching, Docker, Swagger Documentation, Pagination, Search & Filtering.
+A production-style backend REST API built using **Go (Golang)**, **Gin**, **GORM**, **SQL Server**, and **Redis** following scalable backend architecture principles.
+
+This project demonstrates:
+
+* Clean Architecture
+* JWT Authentication
+* Role-Based Authorization
+* Redis Caching
+* Docker Containerization
+* Swagger Documentation
+* Pagination, Search & Filtering
+* Repository & Service Layer Pattern
 
 ---
 
-# 🚀 Features
+# ✨ Features
 
 * JWT Authentication
 * Role-Based Authorization
@@ -52,6 +69,26 @@ This project includes JWT Authentication, Role-Based Authorization, CRUD Operati
 
 * Docker
 * Docker Compose
+
+---
+
+# 🏗 Architecture Flow
+
+```text
+Client Request
+      ↓
+Routes
+      ↓
+Middleware (JWT / Logger / Role)
+      ↓
+Controllers
+      ↓
+Services
+      ↓
+Repositories
+      ↓
+SQL Server / Redis
+```
 
 ---
 
@@ -177,6 +214,40 @@ Task APIs use Redis caching for improving API performance and reducing database 
 
 ---
 
+# 🔥 Performance Features
+
+* Redis Caching
+* Pagination
+* Search Optimization
+* Filter APIs
+* Layered Architecture
+* Reusable Services
+* Optimized Database Queries
+
+---
+
+# 🔒 Security Features
+
+* JWT Authentication
+* Password Hashing using bcrypt
+* Role-Based Authorization
+* Protected Routes
+* Middleware Validation
+
+---
+
+# 🐳 Docker Architecture
+
+```text
+Docker Compose
+│
+├── Go API Container
+├── SQL Server Container
+└── Redis Container
+```
+
+---
+
 # ▶️ Run Locally
 
 ## Clone Repository
@@ -222,7 +293,38 @@ REDIS_ADDR=localhost:6379
 ```
 
 ---
-# Task Management API Interview Questions & Answers
+
+# 📈 Future Enhancements
+
+* CI/CD Pipeline
+* Kubernetes Deployment
+* Unit Testing
+* Refresh Tokens
+* Microservices
+* gRPC
+* Rate Limiting
+* Email Notifications
+* Monitoring & Logging
+
+---
+
+# ⭐ Learning Outcomes
+
+Through this project I learned:
+
+* Backend Architecture in Go
+* REST API Development
+* JWT Authentication
+* Redis Caching
+* Docker Containerization
+* Swagger Integration
+* Middleware Development
+* SQL Server Integration
+* Repository Pattern
+* Service Layer Pattern
+
+---
+### Task Management API Interview Questions & Answers
 
 ## 1. Explain your project architecture.
 
